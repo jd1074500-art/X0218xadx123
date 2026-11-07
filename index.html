@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Happy 19th Birthday, Sana!</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --primary-red: #c81e45;
+      --button-pink: #e12d60;
+      --bg-top: #fdfbfb;
+      --bg-bottom: #f9d8e2;
+      --card-yellow: #f8f6df;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(180deg, var(--bg-top) 0%, #fceef2 55%, var(--bg-bottom) 100%);
+      color: var(--primary-red);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Music Toggle Button */
+    .music-btn {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid rgba(200, 30, 69, 0.25);
+      box-shadow: 0 4px 12px rgba(200, 30, 69, 0.15);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      cursor: pointer;
+      z-index: 100;
+      transition: transform 0.2s ease;
+    }
+
+    .music-btn:hover {
+      transform: scale(1.08);
+    }
+
+    /* Floating subtle background hearts */
+    .bg-heart {
+      position: absolute;
+      color: rgba(225, 45, 96, 0.12);
+      font-size: 1.5rem;
+      pointer-events: none;
+      animation: floatUp 8s linear infinite;
+    }
+
+    @keyframes floatUp {
+      0% { transform: translateY(100vh) scale(0.8); opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+    }
+
+    /* Screen Container */
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      width: 100%;
+      max-width: 540px;
+      padding: 2rem;
+      animation: fadeIn 0.5s ease forwards;
+      z-index: 2;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Typography */
+    h1.serif-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--primary-red);
+      margin-bottom: 0.4rem;
+    }
+
+    .script-title {
+      font-family: 'Caveat', cursive;
+      font-size: 2.6rem;
+      color: var(--primary-red);
+    }
+
+    .sub-badge {
+      font-size: 0.9rem;
+      color: #a63a50;
+      background: rgba(255, 255, 255, 0.75);
+      padding: 0.3rem 0.9rem;
+      border-radius: 999px;
+      margin-bottom: 1.2rem;
+      border: 1px solid rgba(200, 30, 69, 0.2);
+      font-weight: 500;
+    }
+
+    .subtitle {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      color: #4a2c35;
+      margin: 1rem 0 1.4rem;
+    }
+
+    /* Buttons */
+    .btn-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      width: 100%;
+      min-height: 70px;
+    }
+
+    .btn {
+      padding: 0.75rem 2.2rem;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .btn-primary {
+      background: var(--button-pink);
+      color: #fff;
+      box-shadow: 0 6px 18px rgba(225, 45, 96, 0.32);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 8px 22px rgba(225, 45, 96, 0.42);
+    }
+
+    .btn-secondary {
+      background: #fff;
+      color: #333;
+      border: 1px solid #e2d6da;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      position: relative;
+    }
+
+    /* Screen 1 */
+    .cute-illustration {
+      width: 210px;
+      height: 150px;
+      background: rgba(255, 255, 255, 0.65);
+      border-radius: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 24px rgba(200, 30, 69, 0.08);
+      margin: 0.5rem 0;
+      padding: 1rem;
+    }
+
+    /* Screen 2: Balloons */
+    .balloon-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 130px);
+      grid-template-rows: repeat(2, 150px);
+      gap: 1.5rem 2.2rem;
+      margin-top: 1.8rem;
+      justify-items: center;
+      align-items: center;
+    }
+
+    .balloon-slot {
+      position: relative;
+      width: 120px;
+      height: 145px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .balloon {
+      width: 92px;
+      height: 112px;
+      border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
+      position: relative;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.08), 0 8px 18px rgba(0, 0, 0, 0.08);
+      animation: bob 3s ease-in-out infinite;
+      transition: transform 0.15s ease;
+    }
+
+    .balloon:hover {
+      transform: scale(1.07);
+    }
+
+    .balloon.b-blue { background: radial-gradient(circle at 30% 30%, #d8f3ff, #8ecae6); animation-delay: 0s; }
+    .balloon.b-pink { background: radial-gradient(circle at 30% 30%, #ffe5ec, #f4acb7); animation-delay: 0.4s; }
+    .balloon.b-green { background: radial-gradient(circle at 30% 30%, #d8f3dc, #74c69d); animation-delay: 0.8s; }
+    .balloon.b-purple { background: radial-gradient(circle at 30% 30%, #e0c3fc, #b8b8ff); animation-delay: 1.2s; }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .popped-word {
+      font-family: 'Caveat', cursive;
+      font-size: 2.3rem;
+      font-weight: 700;
+      color: var(--primary-red);
+      display: none;
+      animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.3); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    /* Screen 3: Cake & Candle */
+    .cake-container {
+      margin: 2.5rem 0 1.8rem;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .cake-svg {
+      width: 190px;
+      height: 190px;
+      overflow: visible;
+    }
+
+    .flame {
+      transform-origin: center bottom;
+      animation: flicker 0.6s infinite alternate;
+    }
+
+    .flame.blown {
+      display: none;
+    }
+
+    @keyframes flicker {
+      0% { transform: scale(1) rotate(-2deg); opacity: 0.95; }
+      100% { transform: scale(1.12, 0.92) rotate(2deg); opacity: 1; }
+    }
+
+    .wish-overlay {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-weight: 700;
+      font-size: 1.9rem;
+      color: #fff;
+      text-shadow: 0 3px 12px rgba(90, 20, 40, 0.65);
+      position: absolute;
+      top: 52%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 260px;
+      display: none;
+      pointer-events: none;
+    }
+
+    .tap-hint {
+      font-size: 0.95rem;
+      color: var(--button-pink);
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0.5rem 1rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.7);
+      box-shadow: 0 4px 12px rgba(225, 45, 96, 0.12);
+    }
+
+    /* Screen 4: Rose Bouquet */
+    .bouquet-box {
+      margin: 1.8rem 0 2.2rem;
+      font-size: 6.5rem;
+      filter: drop-shadow(0 12px 20px rgba(200, 30, 69, 0.2));
+      animation: floatBouquet 3s ease-in-out infinite;
+      cursor: pointer;
+    }
+
+    @keyframes floatBouquet {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
+
+    /* Screen 5: Polaroid Swipe Cards */
+    .card-stack {
+      position: relative;
+      width: 265px;
+      height: 330px;
+      margin: 1.2rem 0 1.5rem;
+      perspective: 1000px;
+    }
+
+    .polaroid {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border-radius: 14px;
+      padding: 12px 12px 26px 12px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
+      cursor: pointer;
+      transition: transform 0.45s ease, opacity 0.45s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .polaroid img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 20%;
+      border-radius: 8px;
+      background: #f3e5e8;
+    }
+
+    .polaroid:nth-child(1) { z-index: 5; transform: rotate(-2deg); }
+    .polaroid:nth-child(2) { z-index: 4; transform: rotate(2.5deg) translate(4px, 3px); }
+    .polaroid:nth-child(3) { z-index: 3; transform: rotate(-3.5deg) translate(-4px, 6px); }
+    .polaroid:nth-child(4) { z-index: 2; transform: rotate(2deg) translate(5px, 8px); }
+    .polaroid:nth-child(5) { z-index: 1; transform: rotate(-1.5deg) translate(-3px, 10px); }
+
+    .polaroid.swiped {
+      transform: translateX(-140%) rotate(-20deg) !important;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    #screen-5-btn {
+      display: none;
+    }
+
+    /* Screen 6: Envelope & Typewriter Letter */
+    .envelope-wrapper {
+      margin: 2rem 0;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .envelope-wrapper:hover {
+      transform: scale(1.04);
+    }
+
+    .envelope {
+      width: 260px;
+      height: 170px;
+      background: var(--card-yellow);
+      border: 2px solid #d4af37;
+      border-radius: 10px;
+      position: relative;
+      box-shadow: 0 14px 30px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+    }
+
+    .envelope-flap {
+      width: 0;
+      height: 0;
+      border-left: 130px solid transparent;
+      border-right: 130px solid transparent;
+      border-top: 95px solid #f3c6ce;
+      position: absolute;
+      top: 0;
+      left: 0;
+      filter: drop-shadow(0 3px 2px rgba(212, 175, 55, 0.6));
+    }
+
+    .letter-card {
+      display: none;
+      width: 340px;
+      max-height: 360px;
+      background: var(--card-yellow);
+      border-radius: 14px;
+      padding: 1.6rem 1.5rem;
+      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.14);
+      text-align: left;
+      font-family: 'Caveat', cursive;
+      font-size: 1.38rem;
+      line-height: 1.35;
+      color: #2f2f2f;
+      position: relative;
+      overflow-y: auto;
+      margin: 1rem 0 1.4rem;
+      border: 1px solid #ece7c2;
+    }
+
+    .letter-heart-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--button-pink);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+    }
+
+    /* Screen 7: Stunning Final Page with Background Photo Collage */
+    #screen-7 {
+      max-width: 100% !important;
+      height: 100vh;
+      position: relative;
+      padding: 1rem;
+      overflow: hidden;
+    }
+
+    .bg-collage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 0;
+      filter: blur(8px) brightness(0.45);
+      transform: scale(1.1);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .bg-collage img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .final-content-box {
+      position: relative;
+      z-index: 3;
+      background: rgba(25, 10, 15, 0.78);
+      backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 182, 193, 0.25);
+      padding: 2.2rem 2rem;
+      border-radius: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+      max-width: 480px;
+      width: 90%;
+      color: #fff;
+      animation: zoomIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @keyframes zoomIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .final-content-box h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: #ffccd5;
+      margin-bottom: 0.3rem;
+    }
+
+    .final-content-box p {
+      font-size: 0.98rem;
+      line-height: 1.5;
+      color: #f3dee2;
+      margin: 1rem 0;
+    }
+
+    .gift-box {
+      font-size: 5rem;
+      margin: 1.8rem 0;
+      cursor: pointer;
+      position: relative;
+      display: inline-block;
+      animation: shakeGift 1.5s infinite;
+      z-index: 3;
+    }
+
+    .gift-badge {
+      position: absolute;
+      top: 4px;
+      right: -8px;
+      background: var(--button-pink);
+      color: #fff;
+      font-size: 0.85rem;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 600;
+    }
+
+    @keyframes shakeGift {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(-8deg); }
+      40% { transform: rotate(8deg); }
+      60% { transform: rotate(-5deg); }
+      80% { transform: rotate(5deg); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Audio (Starts at 0:22 onwards) -->
+  <audio id="bg-music" preload="auto">
+    <source src="song.mp3" type="audio/mpeg" />
+  </audio>
+
+  <!-- Floating Mute/Unmute Toggle -->
+  <button class="music-btn" id="music-toggle" onclick="toggleMusic()" title="Toggle Music">🎵</button>
+
+  <!-- SCREEN 1: Welcome with Fun No Button -->
+  <div class="screen active" id="screen-1">
+    <p class="script-title">Happy Birthday,</p>
+    <h1 class="serif-title" style="letter-spacing: 1px;">SANA</h1>
+    <div class="sub-badge">Sweet 19</div>
+
+    <div class="cute-illustration">
+      <p style="font-family: 'Playfair Display', serif; font-weight: 700; color: var(--button-pink); font-size: 1.2rem;">HAPPY 19th BIRTHDAY</p>
+      <p style="font-size: 0.9rem; color: #7a4957; margin-top: 0.5rem;" id="no-prompt-text">A special surprise awaits you</p>
+    </div>
+
+    <p class="subtitle">Are you excited for what's next?</p>
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="startExperience()">Yes</button>
+      <button class="btn btn-secondary" id="no-btn" onclick="handleNoClick()">No</button>
+    </div>
+  </div>
+
+  <!-- SCREEN 2: Pop all 4 balloons -->
+  <div class="screen" id="screen-2">
+    <h1 class="serif-title">Pop all 4 balloons</h1>
+    <div class="balloon-grid">
+      <div class="balloon-slot">
+        <div class="balloon b-blue" onclick="popBalloon(this, 0)"></div>
+        <span class="popped-word" id="word-0">You</span>
+      </div>
+      <div class="balloon-slot">
+        <div class="balloon b-pink" onclick="popBalloon(this, 1)"></div>
+        <span class="popped-word" id="word-1">are</span>
+      </div>
+      <div class="balloon-slot">
+        <div class="balloon b-green" onclick="popBalloon(this, 2)"></div>
+        <span class="popped-word" id="word-2">so</span>
+      </div>
+      <div class="balloon-slot">
+        <div class="balloon b-purple" onclick="popBalloon(this, 3)"></div>
+        <span class="popped-word" id="word-3">special</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN 3: Blow the candle -->
+  <div class="screen" id="screen-3">
+    <h1 class="serif-title">Blow the candle, SANA</h1>
+
+    <div class="cake-container" onclick="blowCandle()">
+      <svg class="cake-svg" viewBox="0 0 200 200">
+        <!-- Plate -->
+        <ellipse cx="100" cy="170" rx="80" ry="14" fill="#d8f3dc" />
+        <ellipse cx="100" cy="166" rx="70" ry="10" fill="#b7e4c7" />
+        <!-- Chocolate Cake Base -->
+        <path d="M40 120 Q40 165 100 165 Q160 165 160 120 Z" fill="#6f4e37" />
+        <!-- Cream Frosting -->
+        <path d="M36 115 Q50 135 68 120 Q85 138 102 120 Q120 138 136 120 Q152 135 164 115 Q164 92 100 92 Q36 92 36 115 Z" fill="#fefae0" />
+        <!-- Candle -->
+        <rect x="94" y="48" width="12" height="52" rx="4" fill="#7209b7" />
+        <!-- Flame -->
+        <g class="flame" id="candle-flame">
+          <ellipse cx="100" cy="36" rx="8" ry="14" fill="#ff9f1c" />
+          <ellipse cx="100" cy="39" rx="4" ry="8" fill="#ffbf69" />
+        </g>
+      </svg>
+      <div class="wish-overlay" id="wish-text">Close your eyes &amp; make a wish</div>
+    </div>
+
+    <div class="tap-hint" id="blow-hint" onclick="blowCandle()">Tap to blow the candle</div>
+  </div>
+
+  <!-- SCREEN 4: Rose Bouquet -->
+  <div class="screen" id="screen-4">
+    <p class="script-title">Your Rose Bouquet 🌹</p>
+    <div class="bouquet-box" onclick="goToScreen(5)">💐</div>
+    <p class="tap-hint" onclick="goToScreen(5)">Tap bouquet to continue</p>
+  </div>
+
+  <!-- SCREEN 5: Some Sweet Moments -->
+  <div class="screen" id="screen-5">
+    <h1 class="serif-title">Some Sweet Moments</h1>
+    <p style="font-size: 0.85rem; color: #7a4957;" id="swipe-hint">(Swipe all cards to continue)</p>
+
+    <div class="card-stack">
+      <div class="polaroid" onclick="swipeCard(this)">
+        <img src="IMG_5359.jpg" alt="Photo 1" />
+      </div>
+      <div class="polaroid" onclick="swipeCard(this)">
+        <img src="IMG_4062.jpg" alt="Photo 2" />
+      </div>
+      <div class="polaroid" onclick="swipeCard(this)">
+        <img src="IMG_4391.jpg" alt="Photo 3" />
+      </div>
+      <div class="polaroid" onclick="swipeCard(this)">
+        <img src="IMG_5376.jpg" alt="Photo 4" />
+      </div>
+      <div class="polaroid" onclick="swipeCard(this)">
+        <img src="IMG_4354.jpg" alt="Photo 5" />
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="screen-5-btn" onclick="goToScreen(6)">Continue</button>
+  </div>
+
+  <!-- SCREEN 6: A Message From My Heart -->
+  <div class="screen" id="screen-6">
+    <h1 class="serif-title">A Message From My Heart</h1>
+    <p style="font-size: 0.9rem; color: #7a4957;" id="envelope-sub">Tap the envelope to open</p>
+
+    <div class="envelope-wrapper" id="envelope-box" onclick="openLetter()">
+      <div class="envelope">
+        <div class="envelope-flap"></div>
+      </div>
+      <p style="margin-top: 1.2rem; font-weight: 600; font-size: 0.85rem; letter-spacing: 1px;">TAP TO OPEN</p>
+    </div>
+
+    <div class="letter-card" id="letter-box">
+      <div class="letter-heart-badge">♥</div>
+      <div id="typewriter-text"></div>
+    </div>
+
+    <button class="btn btn-primary" id="letter-continue-btn" style="display: none;" onclick="goToScreen(7)">Continue</button>
+  </div>
+
+  <!-- SCREEN 7: Stunning Final Page with Background Photo Collage -->
+  <div class="screen" id="screen-7">
+    <!-- Blurred Background Photo Collage -->
+    <div class="bg-collage">
+      <img src="IMG_5359.jpg" alt="bg">
+      <img src="IMG_4062.jpg" alt="bg">
+      <img src="IMG_4391.jpg" alt="bg">
+      <img src="IMG_5376.jpg" alt="bg">
+      <img src="IMG_4354.jpg" alt="bg">
+      <img src="IMG_5359.jpg" alt="bg">
+    </div>
+
+    <div id="gift-stage" style="position: relative; z-index: 3;">
+      <p class="script-title" style="font-size: 3rem; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,0.8);">One Last Thing...</p>
+      <p style="color: #ffd1dc; margin-top: 0.2rem; font-size: 1.1rem; text-shadow: 0 1px 6px rgba(0,0,0,0.8);">Tap the gift box</p>
+      <div class="gift-box" onclick="openGift()">
+        🎁
+        <span class="gift-badge">1</span>
+      </div>
+    </div>
+
+    <div class="final-content-box" id="final-stage" style="display: none;">
+      <p style="font-family: 'Caveat', cursive; font-size: 2.2rem; color: #ffb3c1; margin-bottom: -5px;">Forever & Always<

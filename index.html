@@ -365,6 +365,10 @@
       pointer-events: none;
     }
 
+    #screen-5-btn {
+      display: none; /* Appears only after all 4 photos are swiped */
+    }
+
     /* Screen 6: Envelope & Typewriter Letter */
     .envelope-wrapper {
       margin: 2rem 0;
@@ -619,10 +623,10 @@
     <p class="tap-hint" onclick="goToScreen(5)">Tap bouquet to continue</p>
   </div>
 
-  <!-- SCREEN 5: Some Sweet Moments (4 Photos + Backup Continue Button) -->
+  <!-- SCREEN 5: Some Sweet Moments (Continue button appears ONLY after last photo is swiped) -->
   <div class="screen" id="screen-5">
     <h1 class="serif-title">Some Sweet Moments</h1>
-    <p style="font-size: 0.85rem; color: #7a4957;" id="swipe-hint">(Tap any photo to swipe)</p>
+    <p style="font-size: 0.85rem; color: #7a4957;" id="swipe-hint">(Tap cards to swipe through them)</p>
 
     <div class="card-stack" onclick="swipeTopCard()">
       <div class="polaroid">
@@ -639,8 +643,7 @@
       </div>
     </div>
 
-    <!-- Always visible backup Continue button so you never get stuck -->
-    <button class="btn btn-primary" id="screen-5-btn" onclick="goToScreen(6)" style="margin-top: 1rem;">Continue</button>
+    <button class="btn btn-primary" id="screen-5-btn" onclick="goToScreen(6)">Continue</button>
   </div>
 
   <!-- SCREEN 6: A Message From My Heart -->
@@ -663,7 +666,7 @@
     <button class="btn btn-primary" id="letter-continue-btn" style="display: none;" onclick="goToScreen(7)">Continue</button>
   </div>
 
-  <!-- SCREEN 7: Stunning Final Page with 4-Photo Background Collage -->
+  <!-- SCREEN 7: Stunning Final Page with Background Photo Collage -->
   <div class="screen" id="screen-7">
     <!-- Blurred Background Photo Collage -->
     <div class="bg-collage">
@@ -804,16 +807,27 @@
       setTimeout(() => goToScreen(4), 2400);
     }
 
-    // Screen 5: Tap stack to swipe cards easily
+    // Screen 5: Tap stack to swipe cards, Continue button appears ONLY after the last card
+    let swipedCards = 0;
+    const totalCards = 4;
     function swipeTopCard() {
-      const cards = document.querySelectorAll('.polaroid:not(.swiped)');
+      const cards = document.querySelectorAll('.card-stack .polaroid:not(.swiped)');
       if (cards.length > 0) {
-        cards[cards.length - 1].classList.add('swiped');
+        const topCard = cards[cards.length - 1];
+        topCard.classList.add('swiped');
+        swipedCards++;
+
         confetti({
           particleCount: 20,
           spread: 40,
           origin: { y: 0.6 }
         });
+
+        // When the last card is swiped away, reveal the Continue button
+        if (swipedCards >= totalCards) {
+          document.getElementById('swipe-hint').style.display = 'none';
+          document.getElementById('screen-5-btn').style.display = 'inline-block';
+        }
       }
     }
 

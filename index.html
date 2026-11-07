@@ -319,7 +319,7 @@
       50% { transform: translateY(-10px) rotate(2deg); }
     }
 
-    /* Screen 5: Polaroid Swipe Cards */
+    /* Screen 5: Polaroid Swipe Cards (4 Photos) */
     .card-stack {
       position: relative;
       width: 265px;
@@ -354,20 +354,15 @@
       background: #f3e5e8;
     }
 
-    .polaroid:nth-child(1) { z-index: 5; transform: rotate(-2deg); }
-    .polaroid:nth-child(2) { z-index: 4; transform: rotate(2.5deg) translate(4px, 3px); }
-    .polaroid:nth-child(3) { z-index: 3; transform: rotate(-3.5deg) translate(-4px, 6px); }
-    .polaroid:nth-child(4) { z-index: 2; transform: rotate(2deg) translate(5px, 8px); }
-    .polaroid:nth-child(5) { z-index: 1; transform: rotate(-1.5deg) translate(-3px, 10px); }
+    .polaroid:nth-child(1) { z-index: 4; transform: rotate(-2deg); }
+    .polaroid:nth-child(2) { z-index: 3; transform: rotate(2.5deg) translate(4px, 3px); }
+    .polaroid:nth-child(3) { z-index: 2; transform: rotate(-3.5deg) translate(-4px, 6px); }
+    .polaroid:nth-child(4) { z-index: 1; transform: rotate(2deg) translate(5px, 8px); }
 
     .polaroid.swiped {
       transform: translateX(-140%) rotate(-20deg) !important;
       opacity: 0;
       pointer-events: none;
-    }
-
-    #screen-5-btn {
-      display: none;
     }
 
     /* Screen 6: Envelope & Typewriter Letter */
@@ -454,7 +449,7 @@
       width: 100%;
       height: 100%;
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
       grid-template-rows: repeat(2, 1fr);
       gap: 0;
       filter: blur(8px) brightness(0.45);
@@ -624,27 +619,28 @@
     <p class="tap-hint" onclick="goToScreen(5)">Tap bouquet to continue</p>
   </div>
 
-  <!-- SCREEN 5: Some Sweet Moments -->
+  <!-- SCREEN 5: Some Sweet Moments (4 Photos + Backup Continue Button) -->
   <div class="screen" id="screen-5">
     <h1 class="serif-title">Some Sweet Moments</h1>
-    <p style="font-size: 0.85rem; color: #7a4957;" id="swipe-hint">(Swipe all cards to continue)</p>
+    <p style="font-size: 0.85rem; color: #7a4957;" id="swipe-hint">(Tap any photo to swipe)</p>
 
-    <div class="card-stack">
-      <div class="polaroid" onclick="swipeCard(this)">
+    <div class="card-stack" onclick="swipeTopCard()">
+      <div class="polaroid">
         <img src="image.png" alt="Photo 1" />
       </div>
-      <div class="polaroid" onclick="swipeCard(this)">
+      <div class="polaroid">
         <img src="image_2.png" alt="Photo 2" />
       </div>
-      <div class="polaroid" onclick="swipeCard(this)">
+      <div class="polaroid">
         <img src="image_3.png" alt="Photo 3" />
       </div>
-      <div class="polaroid" onclick="swipeCard(this)">
+      <div class="polaroid">
         <img src="image_4.png" alt="Photo 4" />
       </div>
     </div>
 
-    <button class="btn btn-primary" id="screen-5-btn" onclick="goToScreen(6)">Continue</button>
+    <!-- Always visible backup Continue button so you never get stuck -->
+    <button class="btn btn-primary" id="screen-5-btn" onclick="goToScreen(6)" style="margin-top: 1rem;">Continue</button>
   </div>
 
   <!-- SCREEN 6: A Message From My Heart -->
@@ -667,7 +663,7 @@
     <button class="btn btn-primary" id="letter-continue-btn" style="display: none;" onclick="goToScreen(7)">Continue</button>
   </div>
 
-  <!-- SCREEN 7: Stunning Final Page with Background Photo Collage -->
+  <!-- SCREEN 7: Stunning Final Page with 4-Photo Background Collage -->
   <div class="screen" id="screen-7">
     <!-- Blurred Background Photo Collage -->
     <div class="bg-collage">
@@ -675,8 +671,6 @@
       <img src="image_2.png" alt="bg">
       <img src="image_3.png" alt="bg">
       <img src="image_4.png" alt="bg">
-      <img src="image_5.png" alt="bg">
-      <img src="image.png" alt="bg">
     </div>
 
     <div id="gift-stage" style="position: relative; z-index: 3;">
@@ -710,10 +704,7 @@
     });
 
     function startExperience() {
-      // Switch screen immediately so it never feels stuck
       goToScreen(2);
-
-      // Play music safely in the background
       musicToggle.style.display = 'flex';
       bgMusic.currentTime = MUSIC_START_TIME;
       bgMusic.play().catch(error => {
@@ -813,18 +804,14 @@
       setTimeout(() => goToScreen(4), 2400);
     }
 
-    // Screen 5: Swipe all 5 Polaroid cards
-    let swipedCards = 0;
-    const totalCards = 5;
-    function swipeCard(card) {
-      card.classList.add('swiped');
-      swipedCards++;
-      if (swipedCards >= totalCards) {
-        document.getElementById('swipe-hint').style.display = 'none';
-        document.getElementById('screen-5-btn').style.display = 'inline-block';
+    // Screen 5: Tap stack to swipe cards easily
+    function swipeTopCard() {
+      const cards = document.querySelectorAll('.polaroid:not(.swiped)');
+      if (cards.length > 0) {
+        cards[cards.length - 1].classList.add('swiped');
         confetti({
-          particleCount: 35,
-          spread: 60,
+          particleCount: 20,
+          spread: 40,
           origin: { y: 0.6 }
         });
       }

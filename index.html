@@ -693,4 +693,190 @@
 
     <div class="final-content-box" id="final-stage" style="display: none;">
       <p style="font-family: 'Caveat', cursive; font-size: 2.2rem; color: #ffb3c1; margin-bottom: -5px;">Forever & Always</p>
-      <h1>Hap
+      <h1>Happy 19th Birthday, Sana</h1>
+      <p style="font-style: italic; color: #ffe5ec; font-size: 1.05rem;">
+        "From every journey we share to every smile you bring, you are my absolute favorite part of life. Here's to 19 amazing years of you, and all our wonderful tomorrows together."
+      </p>
+      <p style="font-size: 0.85rem; color: #ff8fab; margin-bottom: 1.5rem;">Sweet 19</p>
+      <button class="btn btn-secondary" onclick="replayAll()" style="background: rgba(255,255,255,0.15); color: #fff; border: 1px solid rgba(255,255,255,0.3);">Replay Surprise</button>
+    </div>
+  </div>
+
+  <script>
+    const bgMusic = document.getElementById('bg-music');
+    const musicToggle = document.getElementById('music-toggle');
+    const MUSIC_START_TIME = 22; // 0:22 seconds onwards[span_0](start_span)[span_0](end_span)
+
+    bgMusic.addEventListener('ended', () => {
+      bgMusic.currentTime = MUSIC_START_TIME;
+      bgMusic.play();
+    });
+
+    function startExperience() {
+      // Switch screen immediately so it never feels stuck
+      goToScreen(2);
+
+      // Play music safely in the background
+      musicToggle.style.display = 'flex';
+      bgMusic.currentTime = MUSIC_START_TIME;
+      bgMusic.play().catch(error => {
+        console.log("Audio autoplay restricted by browser:", error);
+      });
+    }
+
+    function toggleMusic() {
+      if (bgMusic.paused) {
+        if (bgMusic.currentTime < MUSIC_START_TIME) {
+          bgMusic.currentTime = MUSIC_START_TIME;
+        }
+        bgMusic.play();
+        musicToggle.innerText = '🎵';
+      } else {
+        bgMusic.pause();
+        musicToggle.innerText = '🔇';
+      }
+    }
+
+    // Fun "No" button messages and behavior
+    let noClickCount = 0;
+    const noMessages = [
+      "Nice try! But you have to click Yes 😉",
+      "Wrong button! Try the pink one 💕",
+      "Nope, not allowed to say no! ✨",
+      "Nice try Sana, click Yes! 🥰"
+    ];
+
+    function handleNoClick() {
+      const promptText = document.getElementById('no-prompt-text');
+      promptText.innerText = noMessages[noClickCount % noMessages.length];
+      promptText.style.color = '#c81e45';
+      promptText.style.fontWeight = '600';
+      noClickCount++;
+
+      const btn = document.getElementById('no-btn');
+      const randomX = (Math.random() - 0.5) * 160;
+      const randomY = (Math.random() - 0.5) * 100;
+      btn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+    }
+
+    // Floating background hearts
+    function createHearts() {
+      for (let i = 0; i < 12; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'bg-heart';
+        heart.innerHTML = '♥';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.animationDuration = (6 + Math.random() * 6) + 's';
+        heart.style.animationDelay = (Math.random() * 5) + 's';
+        document.body.appendChild(heart);
+      }
+    }
+    createHearts();
+
+    // Screen navigation
+    function goToScreen(num) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById('screen-' + num).classList.add('active');
+    }
+
+    // Screen 2: Pop all 4 balloons
+    let poppedCount = 0;
+    function popBalloon(el, idx) {
+      el.style.display = 'none';
+      const word = document.getElementById('word-' + idx);
+      word.style.display = 'block';
+      poppedCount++;
+
+      confetti({
+        particleCount: 25,
+        spread: 55,
+        origin: { y: 0.6 }
+      });
+
+      if (poppedCount === 4) {
+        setTimeout(() => goToScreen(3), 1400);
+      }
+    }
+
+    // Screen 3: Blow the candle
+    let candleBlown = false;
+    function blowCandle() {
+      if (candleBlown) return;
+      candleBlown = true;
+      document.getElementById('candle-flame').classList.add('blown');
+      document.getElementById('wish-text').style.display = 'block';
+      document.getElementById('blow-hint').innerText = 'Making your 19th birthday wish...';
+
+      confetti({
+        particleCount: 45,
+        spread: 70,
+        origin: { y: 0.55 }
+      });
+
+      setTimeout(() => goToScreen(4), 2400);
+    }
+
+    // Screen 5: Swipe all 5 Polaroid cards
+    let swipedCards = 0;
+    const totalCards = 5;
+    function swipeCard(card) {
+      card.classList.add('swiped');
+      swipedCards++;
+      if (swipedCards >= totalCards) {
+        document.getElementById('swipe-hint').style.display = 'none';
+        document.getElementById('screen-5-btn').style.display = 'inline-block';
+        confetti({
+          particleCount: 35,
+          spread: 60,
+          origin: { y: 0.6 }
+        });
+      }
+    }
+
+    // Screen 6: Open Envelope & Typewriter Letter
+    const letterMessage = `Dear SANA,\n\nHappy 19th Birthday to someone truly special! 19 years of making the world brighter!\n\nYou are sweet, loyal, my rock, and I'm so grateful to have you in my life.\n\nYou bring so much warmth and sweetness into my life. Every moment with you is precious.\n\nOn your special day, I wish you all the happiness, love, and joy that you deserve. May this year bring you countless beautiful moments and wonderful memories.\n\nHere's to celebrating you today and always!\n\nWith love and best wishes,\nYour Special Someone`;
+
+    let letterOpened = false;
+    function openLetter() {
+      if (letterOpened) return;
+      letterOpened = true;
+      document.getElementById('envelope-box').style.display = 'none';
+      document.getElementById('envelope-sub').style.display = 'none';
+
+      const letterBox = document.getElementById('letter-box');
+      const textContainer = document.getElementById('typewriter-text');
+      letterBox.style.display = 'block';
+
+      let i = 0;
+      function typeWriter() {
+        if (i < letterMessage.length) {
+          const char = letterMessage.charAt(i);
+          textContainer.innerHTML += char === '\n' ? '<br>' : char;
+          letterBox.scrollTop = letterBox.scrollHeight;
+          i++;
+          setTimeout(typeWriter, 28);
+        } else {
+          document.getElementById('letter-continue-btn').style.display = 'inline-block';
+        }
+      }
+      typeWriter();
+    }
+
+    // Screen 7: Open Final Gift
+    function openGift() {
+      document.getElementById('gift-stage').style.display = 'none';
+      document.getElementById('final-stage').style.display = 'block';
+
+      confetti({
+        particleCount: 120,
+        spread: 100,
+        origin: { y: 0.55 }
+      });
+    }
+
+    function replayAll() {
+      location.reload();
+    }
+  </script>
+</body>
+</html>

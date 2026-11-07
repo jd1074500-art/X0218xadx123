@@ -319,7 +319,7 @@
       50% { transform: translateY(-10px) rotate(2deg); }
     }
 
-    /* Screen 5: Polaroid Swipe Cards (4 Photos) */
+    /* Screen 5: Polaroid Swipe Cards (4 Photos in exact order) */
     .card-stack {
       position: relative;
       width: 265px;
@@ -354,11 +354,11 @@
       background: #f3e5e8;
     }
 
-    /* Exact order: image.png on top, followed by image_2.png, image_3.png, image_4.png at the bottom */
-    .polaroid:nth-child(1) { z-index: 4; transform: rotate(-2deg); }
-    .polaroid:nth-child(2) { z-index: 3; transform: rotate(2.5deg) translate(4px, 3px); }
-    .polaroid:nth-child(3) { z-index: 2; transform: rotate(-3.5deg) translate(-4px, 6px); }
-    .polaroid:nth-child(4) { z-index: 1; transform: rotate(2deg) translate(5px, 8px); }
+    /* Exact Layering Order: image.png on top (z-index 4), followed by image_2.png (3), image_3.png (2), image_4.png (1) */
+    .polaroid.p-4 { z-index: 1; transform: rotate(2deg) translate(5px, 8px); }
+    .polaroid.p-3 { z-index: 2; transform: rotate(-3.5deg) translate(-4px, 6px); }
+    .polaroid.p-2 { z-index: 3; transform: rotate(2.5deg) translate(4px, 3px); }
+    .polaroid.p-1 { z-index: 4; transform: rotate(-2deg); }
 
     .polaroid.swiped {
       transform: translateX(-140%) rotate(-20deg) !important;
@@ -624,26 +624,22 @@
     <p class="tap-hint" onclick="goToScreen(5)">Tap bouquet to continue</p>
   </div>
 
-  <!-- SCREEN 5: Some Sweet Moments (Exact Order: image.png -> image_2.png -> image_3.png -> image_4.png) -->
+  <!-- SCREEN 5: Some Sweet Moments (Exact sequence: image.png -> image_2.png -> image_3.png -> image_4.png) -->
   <div class="screen" id="screen-5">
     <h1 class="serif-title">Some Sweet Moments</h1>
-    <p style="font-size: 0.85rem; color: #7a4957;" id="swipe-hint">(Tap the photo stack to swipe through)</p>
+    <p style="font-size: 0.85rem; color: #7a4957;" id="swipe-hint">(Tap the photos to swipe through)</p>
 
     <div class="card-stack" onclick="swipeTopCard()">
-      <!-- Bottom of stack: image_4.png -->
-      <div class="polaroid">
+      <div class="polaroid p-4">
         <img src="image_4.png" alt="Photo 4" />
       </div>
-      <!-- image_3.png -->
-      <div class="polaroid">
+      <div class="polaroid p-3">
         <img src="image_3.png" alt="Photo 3" />
       </div>
-      <!-- image_2.png -->
-      <div class="polaroid">
+      <div class="polaroid p-2">
         <img src="image_2.png" alt="Photo 2" />
       </div>
-      <!-- Top of stack: image.png -->
-      <div class="polaroid">
+      <div class="polaroid p-1">
         <img src="image.png" alt="Photo 1" />
       </div>
     </div>
@@ -812,13 +808,15 @@
       setTimeout(() => goToScreen(4), 2400);
     }
 
-    // Screen 5: Proper sequential card swiping starting from image.png to image_4.png
+    // Screen 5: Precise sequential card swiping from image.png to image_4.png
     let swipedCards = 0;
     const totalCards = 4;
     function swipeTopCard() {
+      // Find the currently active top card (highest z-index / class p-1, then p-2, etc.)
       const unswipedCards = document.querySelectorAll('.card-stack .polaroid:not(.swiped)');
       
       if (unswipedCards.length > 0) {
+        // The top card is always the last element in the unswiped list
         const topCard = unswipedCards[unswipedCards.length - 1];
         topCard.classList.add('swiped');
         swipedCards++;

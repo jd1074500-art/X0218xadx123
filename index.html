@@ -326,6 +326,7 @@
       height: 330px;
       margin: 1.2rem 0 1.5rem;
       perspective: 1000px;
+      cursor: pointer;
     }
 
     .polaroid {
@@ -338,7 +339,6 @@
       border-radius: 14px;
       padding: 12px 12px 26px 12px;
       box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
-      cursor: pointer;
       transition: transform 0.45s ease, opacity 0.45s ease;
       display: flex;
       align-items: center;
@@ -354,10 +354,11 @@
       background: #f3e5e8;
     }
 
-    .polaroid:nth-child(1) { z-index: 4; transform: rotate(-2deg); }
-    .polaroid:nth-child(2) { z-index: 3; transform: rotate(2.5deg) translate(4px, 3px); }
-    .polaroid:nth-child(3) { z-index: 2; transform: rotate(-3.5deg) translate(-4px, 6px); }
-    .polaroid:nth-child(4) { z-index: 1; transform: rotate(2deg) translate(5px, 8px); }
+    /* Stacking order: 4th image on top down to 1st image on bottom */
+    .polaroid:nth-child(1) { z-index: 1; transform: rotate(-2deg); }
+    .polaroid:nth-child(2) { z-index: 2; transform: rotate(2.5deg) translate(4px, 3px); }
+    .polaroid:nth-child(3) { z-index: 3; transform: rotate(-3.5deg) translate(-4px, 6px); }
+    .polaroid:nth-child(4) { z-index: 4; transform: rotate(2deg) translate(5px, 8px); }
 
     .polaroid.swiped {
       transform: translateX(-140%) rotate(-20deg) !important;
@@ -366,7 +367,7 @@
     }
 
     #screen-5-btn {
-      display: none; /* Appears only after all 4 photos are swiped */
+      display: none; /* Appears only after all cards are swiped */
     }
 
     /* Screen 6: Envelope & Typewriter Letter */
@@ -623,10 +624,10 @@
     <p class="tap-hint" onclick="goToScreen(5)">Tap bouquet to continue</p>
   </div>
 
-  <!-- SCREEN 5: Some Sweet Moments (Continue button appears ONLY after last photo is swiped) -->
+  <!-- SCREEN 5: Some Sweet Moments (Proper 4-photo stack swiping) -->
   <div class="screen" id="screen-5">
     <h1 class="serif-title">Some Sweet Moments</h1>
-    <p style="font-size: 0.85rem; color: #7a4957;" id="swipe-hint">(Tap cards to swipe through them)</p>
+    <p style="font-size: 0.85rem; color: #7a4957;" id="swipe-hint">(Tap the photo stack to swipe through)</p>
 
     <div class="card-stack" onclick="swipeTopCard()">
       <div class="polaroid">
@@ -807,13 +808,16 @@
       setTimeout(() => goToScreen(4), 2400);
     }
 
-    // Screen 5: Tap stack to swipe cards, Continue button appears ONLY after the last card
+    // Screen 5: Proper sequential card swiping
     let swipedCards = 0;
     const totalCards = 4;
     function swipeTopCard() {
-      const cards = document.querySelectorAll('.card-stack .polaroid:not(.swiped)');
-      if (cards.length > 0) {
-        const topCard = cards[cards.length - 1];
+      // Find all polaroids that have NOT been swiped yet
+      const unswipedCards = document.querySelectorAll('.card-stack .polaroid:not(.swiped)');
+      
+      if (unswipedCards.length > 0) {
+        // The top card is always the last item in the unswiped list
+        const topCard = unswipedCards[unswipedCards.length - 1];
         topCard.classList.add('swiped');
         swipedCards++;
 
@@ -823,7 +827,7 @@
           origin: { y: 0.6 }
         });
 
-        // When the last card is swiped away, reveal the Continue button
+        // When all 4 photos are swiped away, show the Continue button
         if (swipedCards >= totalCards) {
           document.getElementById('swipe-hint').style.display = 'none';
           document.getElementById('screen-5-btn').style.display = 'inline-block';
